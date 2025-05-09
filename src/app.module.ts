@@ -8,7 +8,7 @@ import { ClienteModule } from './cliente/cliente.module';
 
 
 @Module({
-  imports: [UserModule, PrismaModule, PrismaModule, ClienteModule],
+  imports: [UserModule, PrismaModule, ClienteModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
