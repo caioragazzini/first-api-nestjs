@@ -18,22 +18,37 @@ export class UserService {
       
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll() {
+    return await this.prisma.user.findMany({
+      // select: {
+      //   name: true
+      // }
+      
+  });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    return await this.prisma.user.findUnique({
+      where: {
+        id
+      }
+    });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return {
-      message: `Usuário com id ${id} atualizado com sucesso`,
-      data: updateUserDto,
-    };
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    return await this.prisma.user.update({
+      where: {
+        id
+      },
+      data: updateUserDto
+    }); 
+    
   }
+     
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    return  await this.prisma.user.delete({
+      where: { id }
+    });
   }
 }
