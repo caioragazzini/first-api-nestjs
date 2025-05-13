@@ -8,7 +8,7 @@ export class ClienteService {
     constructor(private readonly prisma: PrismaService) {}
 
     async create(prisma : CreateClienteDto) {
-        return await this.prisma.cliente.create({
+        return await this.prisma.client.create({
             data: prisma
         });
     }

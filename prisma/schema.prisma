@@ -17,9 +17,23 @@ model User {
 }
 
 model Client {
-  id       Int     @id @unique(map: "id_UNIQUE") @default(autoincrement())
-  name     String? @db.VarChar(45)
-  email    String? @db.VarChar(45)
-  password String? @db.VarChar(45)
+  id       Int      @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  name     String?  @db.VarChar(45)
+  email    String?  @db.VarChar(45)
+  password String?  @db.VarChar(45)
+
+  pedidos  Pedido[] @relation("ClientPedidos") // Um cliente pode ter vários pedidos
+
   @@map("clientes")
+}
+
+model Pedido {
+  id         Int       @id @default(autoincrement())
+  clienteId  Int
+  dataPedido DateTime? @db.DateTime(0)
+  status     String?   @db.VarChar(45)
+
+  cliente    Client    @relation("ClientPedidos", fields: [clienteId], references: [id]) // Relacionamento com Client
+
+  @@map("pedidos")
 }
