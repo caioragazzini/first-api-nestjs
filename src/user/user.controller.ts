@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LogInterceptor } from 'src/interceptors/log.interceptor';
+import { ParamId } from 'src/decorators/param-id.decorator';
 
 @UseInterceptors(LogInterceptor)
 @Controller('users')
@@ -21,8 +22,9 @@ export class UserController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  async findOne(@ParamId() id : number) {
+    console.log({id});
+    return this.userService.findOne(id);
   }
 
 
@@ -37,7 +39,7 @@ export class UserController {
 }
 
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number) {
+  async remove(@ParamId() id: number){
     return this.userService.remove(+id);
   }
 }
