@@ -9,10 +9,15 @@ export class UserService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(prisma: CreateUserDto) {
+  async create(data: CreateUserDto) {
 
     return await this.prisma.user.create({
-      data: prisma
+      data,
+      select: {
+        id: true,
+        name: true,
+       
+      }
 
     });   
       
@@ -28,6 +33,8 @@ export class UserService {
   }
 
   async findOne(id: number) {
+    
+    
     return await this.prisma.user.findUnique({
       where: {
         id
