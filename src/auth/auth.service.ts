@@ -1,15 +1,36 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { PrismaService } from "src/prisma/prisma.service";
+import { User } from "@prisma/client";
+import { UserService } from "src/user/user.service";
+import { AuthRegisterDto } from "./dto/auth-register.dto";
+import { access } from "fs";
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly JWTService: JwtService, private readonly prisma: PrismaService){}
+    constructor(
+        private readonly JWTService: JwtService, 
+        private readonly prisma: PrismaService,
+        private readonly userService: UserService
+    ) {}
 
 
-    async createToken(userId: number): Promise<string> {
-        const payload = { userId };
-        return this.JWTService.sign(payload);
+    async createToken(user: User){
+        const payload = {
+            id: user.id,
+            email: user.email,
+            name: user.name
+        };
+
+        return {
+            accessToken: this.JWTService.sign(
+            payload,
+            {
+                expiresIn: '1h', 
+                subject: String(user.id),
+                issuer: 'login-service',
+                audience: 'users'
+            })};
     }
 
     async checkToken(token: string): Promise<any> {
@@ -32,7 +53,7 @@ export class AuthService {
             throw new Error('Credenciais inválidas.');
         }
 
-        return user;
+        return this.createToken(user);
 
 
       
@@ -60,15 +81,24 @@ export class AuthService {
 
         const id =0;
 
-        await this.prisma.user.update({
-          where: {id},
+        const user = await this.prisma.user.update({
+          where: {
+            id
+        },
           data: {
             password
-          }
-        })
+          },
+        });
 
-        return true;
+         return this.createToken(user);
        
+    }
+
+    async register(data: AuthRegisterDto){
+
+        const user = await this.userService.create(data);
+
+        return this.createToken(user);
     }
    
 }

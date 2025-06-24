@@ -19,9 +19,9 @@ export class AuthController {
     }
 
      @Post('register')
-    async register(@Body() body:AuthRegisterDto) {   
+    async register(@Body() body:AuthRegisterDto) {    
 
-        return this.userService.create(body);       
+        return this.authService.register(body);       
     }
 
     @Post('forget')
@@ -30,7 +30,7 @@ export class AuthController {
         return this.authService.forget(body.email);
     }
 
-@Post('reset')
+    @Post('reset')
     async reset(@Body() { password, token }: AuthResetDto) {
 
         return this.authService.reset(password, token);

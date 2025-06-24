@@ -13,11 +13,7 @@ export class UserService {
 
     return await this.prisma.user.create({
       data,
-      select: {
-        id: true,
-        name: true,
-       
-      }
+    
 
     });   
       
