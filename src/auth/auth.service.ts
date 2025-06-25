@@ -8,6 +8,10 @@ import { access } from "fs";
 
 @Injectable()
 export class AuthService {
+
+    private issuer = 'login-service';
+    private audience = 'users';
+
     constructor(
         private readonly JWTService: JwtService, 
         private readonly prisma: PrismaService,
@@ -26,18 +30,32 @@ export class AuthService {
             accessToken: this.JWTService.sign(
             payload,
             {
-                expiresIn: '1h', 
+                expiresIn: '20 seconds', 
                 subject: String(user.id),
-                issuer: 'login-service',
-                audience: 'users'
+                issuer: this.issuer,
+                audience: this.audience
             })};
     }
 
-    async checkToken(token: string): Promise<any> {
+    async checkToken(token: string) {
         try {
-            return this.JWTService.verify(token);
+            const data = await this.JWTService.verify(token, {
+                issuer: this.issuer,
+                audience: this.audience
+            });
+
+            return data;
         } catch (error) {
-            return null; 
+            throw new UnauthorizedException('Token inválido ou expirado.');
+        }
+    }
+
+     async isValidtoken(token: string) {
+        try {
+            this.checkToken(token);
+            return true;
+        } catch (error) {
+            return false;
         }
     }
 
