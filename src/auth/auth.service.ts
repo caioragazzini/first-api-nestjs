@@ -19,7 +19,7 @@ export class AuthService {
     ) {}
 
 
-    async createToken(user: User){
+    createToken(user: User){
         const payload = {
             id: user.id,
             email: user.email,
@@ -30,16 +30,16 @@ export class AuthService {
             accessToken: this.JWTService.sign(
             payload,
             {
-                expiresIn: '20 seconds', 
+                expiresIn: '7 days', 
                 subject: String(user.id),
                 issuer: this.issuer,
                 audience: this.audience
             })};
     }
 
-    async checkToken(token: string) {
+    checkToken(token: string) {
         try {
-            const data = await this.JWTService.verify(token, {
+            const data = this.JWTService.verify(token, {
                 issuer: this.issuer,
                 audience: this.audience
             });
@@ -50,7 +50,7 @@ export class AuthService {
         }
     }
 
-     async isValidtoken(token: string) {
+     isValidtoken(token: string) {
         try {
             this.checkToken(token);
             return true;
@@ -70,11 +70,7 @@ export class AuthService {
         if (!user) {
             throw new Error('Credenciais inválidas.');
         }
-
-        return this.createToken(user);
-
-
-      
+        return this.createToken(user);     
        
     }
 
