@@ -6,6 +6,7 @@ import { AuthResetDto } from "./dto/auth-reset.dto";
 import { UserService } from "src/user/user.service";
 import { AuthService } from "./auth.service";
 import { AuthGuard } from "src/guards/auth.guard";
+import { User } from "src/decorators/user.decorator";
 
 @Controller('auth')
 export class AuthController {
@@ -38,9 +39,18 @@ export class AuthController {
 
     @UseGuards(AuthGuard)
     @Post('me')
-    async me(@Req() req ) {
+    async me(@User() user) {
 
-        return {me: 'ok', data: req.tokenPayload};
+        return {me: 'OK', user  };
+    }
+
+    // Exemplo de uso do decorator User
+    // @User('email') retorna o email do usuário autenticado
+    @UseGuards(AuthGuard)
+    @Post('me2')
+    async me2(@User('email') user) {
+
+        return {me: 'OK', user  };
     }
 
 
